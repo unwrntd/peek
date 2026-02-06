@@ -1,0 +1,59 @@
+MIT License
+
+Copyright (c) 2024 Evin Safdia
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+ADDITIONAL DISCLAIMER
+
+This software is a personal hobby project developed primarily for the author's
+own use. It was created through rapid "vibe coding" without extensive testing,
+code review, or security auditing.
+
+BY USING THIS SOFTWARE, YOU ACKNOWLEDGE AND AGREE THAT:
+
+1. NO SUPPORT IS PROVIDED. The author is under no obligation to provide
+   technical support, bug fixes, updates, or improvements.
+
+2. NO WARRANTIES. The software may contain bugs, security vulnerabilities,
+   or other defects. No guarantees are made regarding functionality,
+   reliability, security, or fitness for any purpose.
+
+3. USE AT YOUR OWN RISK. The author is not responsible for any damage,
+   data loss, security breaches, service disruptions, or other issues
+   that may arise from using this software.
+
+4. THIRD-PARTY SERVICES. This software connects to various third-party
+   services and APIs. The author is not responsible for any issues arising
+   from these connections, including but not limited to service outages,
+   API changes, or security incidents.
+
+5. NO PRODUCTION GUARANTEES. This software is not intended for production
+   use in critical environments. If you choose to use it in such environments,
+   you do so entirely at your own risk.
+
+6. PROJECT ABANDONMENT. The author reserves the right to abandon, archive,
+   or discontinue this project at any time without notice.
+
+7. CONTRIBUTION HANDLING. There is no guarantee that issues will be
+   addressed or that pull requests will be reviewed or merged.
+
+This disclaimer supplements and does not replace the MIT License terms above.

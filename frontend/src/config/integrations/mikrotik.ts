@@ -1,0 +1,371 @@
+import { IntegrationConfig } from './types';
+
+export const mikrotikConfig: IntegrationConfig = {
+  type: 'mikrotik',
+  displayName: 'MikroTik RouterOS',
+  category: 'networking',
+  description: 'MikroTik RouterOS router and switch management',
+  documentationUrl: 'https://help.mikrotik.com/docs/spaces/ROS/pages/47579162/REST+API',
+  dependencies: {
+    apis: ['RouterOS REST API'],
+    notes: 'Requires RouterOS v7.1+ with REST API enabled. HTTPS recommended.',
+  },
+  sampleName: 'Main Router',
+  defaultPort: 443,
+  sampleHost: '192.168.88.1',
+
+  auth: {
+    defaultMethod: 'basic',
+    commonFields: [
+      {
+        key: 'host',
+        label: 'Host',
+        type: 'text',
+        placeholder: '192.168.88.1',
+        required: true,
+      },
+      {
+        key: 'port',
+        label: 'Port',
+        type: 'number',
+        placeholder: '443',
+        required: true,
+      },
+    ],
+    methods: [
+      {
+        method: 'basic',
+        label: 'Username & Password',
+        fields: [
+          {
+            key: 'username',
+            label: 'Username',
+            type: 'text',
+            placeholder: 'admin',
+            required: true,
+          },
+          {
+            key: 'password',
+            label: 'Password',
+            type: 'password',
+            placeholder: 'Your password',
+            required: false,
+            helpText: 'Default MikroTik admin has no password',
+          },
+        ],
+      },
+    ],
+    helpText: 'Use your RouterOS console credentials. HTTPS is recommended for production.',
+  },
+
+  widgets: [
+    {
+      type: 'mikrotik-system',
+      name: 'System Status',
+      description: 'Router identity, version, CPU, memory, and uptime',
+      metric: 'system',
+      defaultSize: { w: 3, h: 2 },
+      minSize: { w: 2, h: 2 },
+      supportsMetricSize: true,
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'card', label: 'Status Card (Default)' },
+        { value: 'gauges', label: 'Resource Gauges' },
+        { value: 'compact', label: 'Compact View' },
+      ],
+    },
+    {
+      type: 'mikrotik-interfaces',
+      name: 'Interfaces',
+      description: 'Network interfaces with traffic statistics',
+      metric: 'interfaces',
+      defaultSize: { w: 4, h: 4 },
+      minSize: { w: 3, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'table', label: 'Interface Table (Default)' },
+        { value: 'cards', label: 'Interface Cards' },
+        { value: 'traffic', label: 'Traffic Focus' },
+      ],
+      filters: [
+        {
+          label: 'Type',
+          key: 'type',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'ether', label: 'Ethernet' },
+            { value: 'wlan', label: 'Wireless' },
+            { value: 'bridge', label: 'Bridge' },
+            { value: 'vlan', label: 'VLAN' },
+          ],
+        },
+        {
+          label: 'Status',
+          key: 'status',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'running', label: 'Running' },
+            { value: 'disabled', label: 'Disabled' },
+          ],
+        },
+        {
+          label: 'Search',
+          key: 'search',
+          type: 'text',
+          placeholder: 'Filter by name',
+        },
+      ],
+    },
+    {
+      type: 'mikrotik-wireless',
+      name: 'Wireless Clients',
+      description: 'Connected wireless clients with signal strength',
+      metric: 'wireless-clients',
+      defaultSize: { w: 4, h: 4 },
+      minSize: { w: 3, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'table', label: 'Client Table (Default)' },
+        { value: 'cards', label: 'Client Cards' },
+        { value: 'signal', label: 'Signal View' },
+      ],
+      filters: [
+        {
+          label: 'Interface',
+          key: 'interface',
+          type: 'text',
+          placeholder: 'Filter by interface',
+        },
+        {
+          label: 'Search',
+          key: 'search',
+          type: 'text',
+          placeholder: 'Search by MAC',
+        },
+      ],
+    },
+    {
+      type: 'mikrotik-dhcp',
+      name: 'DHCP Leases',
+      description: 'DHCP server leases and clients',
+      metric: 'dhcp-leases',
+      defaultSize: { w: 4, h: 4 },
+      minSize: { w: 3, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'table', label: 'Lease Table (Default)' },
+        { value: 'cards', label: 'Lease Cards' },
+        { value: 'compact', label: 'Compact List' },
+      ],
+      filters: [
+        {
+          label: 'Status',
+          key: 'status',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'bound', label: 'Bound' },
+            { value: 'waiting', label: 'Waiting' },
+            { value: 'offered', label: 'Offered' },
+          ],
+        },
+        {
+          label: 'Type',
+          key: 'type',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'dynamic', label: 'Dynamic' },
+            { value: 'static', label: 'Static' },
+          ],
+        },
+        {
+          label: 'Search',
+          key: 'search',
+          type: 'text',
+          placeholder: 'Search by IP, MAC, or hostname',
+        },
+      ],
+    },
+    {
+      type: 'mikrotik-firewall',
+      name: 'Firewall Rules',
+      description: 'Firewall filter rules with hit counts',
+      metric: 'firewall',
+      defaultSize: { w: 4, h: 4 },
+      minSize: { w: 3, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'table', label: 'Rule Table (Default)' },
+        { value: 'cards', label: 'Rule Cards' },
+        { value: 'stats', label: 'Hit Statistics' },
+      ],
+      filters: [
+        {
+          label: 'Chain',
+          key: 'chain',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'input', label: 'Input' },
+            { value: 'forward', label: 'Forward' },
+            { value: 'output', label: 'Output' },
+          ],
+        },
+        {
+          label: 'Action',
+          key: 'action',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'accept', label: 'Accept' },
+            { value: 'drop', label: 'Drop' },
+            { value: 'reject', label: 'Reject' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'mikrotik-connections',
+      name: 'Active Connections',
+      description: 'Active network connections through the router',
+      metric: 'connections',
+      defaultSize: { w: 5, h: 4 },
+      minSize: { w: 4, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'table', label: 'Connection Table (Default)' },
+        { value: 'summary', label: 'Protocol Summary' },
+      ],
+      filters: [
+        {
+          label: 'Protocol',
+          key: 'protocol',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'tcp', label: 'TCP' },
+            { value: 'udp', label: 'UDP' },
+            { value: 'icmp', label: 'ICMP' },
+          ],
+        },
+        {
+          label: 'Search',
+          key: 'search',
+          type: 'text',
+          placeholder: 'Search by IP or port',
+        },
+        {
+          label: 'Max Items',
+          key: 'maxItems',
+          type: 'number',
+          placeholder: '100',
+        },
+      ],
+    },
+    {
+      type: 'mikrotik-routes',
+      name: 'Routing Table',
+      description: 'IP routing table',
+      metric: 'routes',
+      defaultSize: { w: 4, h: 3 },
+      minSize: { w: 3, h: 2 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'table', label: 'Route Table (Default)' },
+        { value: 'cards', label: 'Route Cards' },
+      ],
+      filters: [
+        {
+          label: 'Status',
+          key: 'status',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'active', label: 'Active' },
+            { value: 'disabled', label: 'Disabled' },
+          ],
+        },
+        {
+          label: 'Type',
+          key: 'type',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'static', label: 'Static' },
+            { value: 'dynamic', label: 'Dynamic' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'mikrotik-arp',
+      name: 'ARP Table',
+      description: 'ARP cache entries',
+      metric: 'arp',
+      defaultSize: { w: 3, h: 3 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'table', label: 'ARP Table (Default)' },
+        { value: 'cards', label: 'ARP Cards' },
+      ],
+      filters: [
+        {
+          label: 'Interface',
+          key: 'interface',
+          type: 'text',
+          placeholder: 'Filter by interface',
+        },
+        {
+          label: 'Search',
+          key: 'search',
+          type: 'text',
+          placeholder: 'Search by IP or MAC',
+        },
+      ],
+    },
+    {
+      type: 'mikrotik-log',
+      name: 'System Log',
+      description: 'Recent system log entries',
+      metric: 'log',
+      defaultSize: { w: 4, h: 4 },
+      minSize: { w: 3, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'list', label: 'Log List (Default)' },
+        { value: 'compact', label: 'Compact View' },
+      ],
+      filters: [
+        {
+          label: 'Topic',
+          key: 'topic',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'system', label: 'System' },
+            { value: 'firewall', label: 'Firewall' },
+            { value: 'dhcp', label: 'DHCP' },
+            { value: 'wireless', label: 'Wireless' },
+            { value: 'interface', label: 'Interface' },
+          ],
+        },
+        {
+          label: 'Search',
+          key: 'search',
+          type: 'text',
+          placeholder: 'Search log messages',
+        },
+        {
+          label: 'Max Entries',
+          key: 'maxItems',
+          type: 'number',
+          placeholder: '50',
+        },
+      ],
+    },
+  ],
+};

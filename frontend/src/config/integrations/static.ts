@@ -1,0 +1,531 @@
+import { StaticWidgetConfig, FilterConfig } from './types';
+
+/**
+ * Common refresh interval filter - can be added to any widget that supports refreshInterval
+ */
+export const refreshIntervalFilter: FilterConfig = {
+  label: 'Refresh Interval',
+  key: 'refreshInterval',
+  type: 'select',
+  options: [
+    { value: '5000', label: '5 seconds' },
+    { value: '10000', label: '10 seconds' },
+    { value: '30000', label: '30 seconds' },
+    { value: '60000', label: '1 minute' },
+    { value: '300000', label: '5 minutes' },
+    { value: '600000', label: '10 minutes' },
+    { value: '1800000', label: '30 minutes' },
+    { value: '3600000', label: '1 hour' },
+    { value: '0', label: 'Manual only' },
+  ],
+};
+
+/**
+ * Static Widgets - widgets that don't require an integration
+ */
+export const staticWidgets: StaticWidgetConfig[] = [
+  {
+    type: 'text',
+    name: 'Text',
+    description: 'Rich text content with formatting support',
+    defaultSize: { w: 3, h: 2 },
+    minSize: { w: 2, h: 1 },
+    // Font/color options are in the text editor toolbar, not filters
+  },
+  {
+    type: 'image',
+    name: 'Image',
+    description: 'Display an uploaded image or slideshow',
+    defaultSize: { w: 3, h: 3 },
+    minSize: { w: 2, h: 2 },
+    filters: [
+      {
+        label: 'Image Fit',
+        key: 'fit',
+        type: 'select',
+        options: [
+          { value: 'contain', label: 'Contain (show full image)' },
+          { value: 'cover', label: 'Cover (may crop)' },
+          { value: 'fill', label: 'Fill (may stretch)' },
+        ],
+      },
+      {
+        label: 'Background Blur',
+        key: 'backgroundBlur',
+        type: 'checkbox',
+      },
+      {
+        label: 'Alt Text',
+        key: 'alt',
+        type: 'text',
+        placeholder: 'Image description',
+      },
+      {
+        label: 'Link URL',
+        key: 'linkUrl',
+        type: 'text',
+        placeholder: 'https://example.com (opens in new tab)',
+      },
+      {
+        label: 'Enable Slideshow',
+        key: 'slideshowEnabled',
+        type: 'checkbox',
+      },
+      {
+        label: 'Slideshow Interval',
+        key: 'slideshowInterval',
+        type: 'select',
+        options: [
+          { value: '3000', label: '3 seconds' },
+          { value: '5000', label: '5 seconds (Default)' },
+          { value: '7000', label: '7 seconds' },
+          { value: '10000', label: '10 seconds' },
+          { value: '15000', label: '15 seconds' },
+          { value: '30000', label: '30 seconds' },
+        ],
+      },
+      {
+        label: 'Transition Effect',
+        key: 'slideshowTransition',
+        type: 'select',
+        options: [
+          { value: 'fade', label: 'Fade (Default)' },
+          { value: 'slide', label: 'Slide' },
+          { value: 'none', label: 'None (instant)' },
+        ],
+      },
+      {
+        label: 'Slideshow Options',
+        key: 'slideshowOptions',
+        type: 'checkbox-group',
+        defaultEnabled: true,
+        items: [
+          { label: 'Auto-play', key: 'slideshowAutoPlay' },
+          { label: 'Show Controls', key: 'slideshowShowControls' },
+        ],
+      },
+    ],
+  },
+  {
+    type: 'network-tools',
+    name: 'Network Tools',
+    description: 'Ping, traceroute, DNS lookup, port check, and WHOIS',
+    defaultSize: { w: 4, h: 3 },
+    minSize: { w: 2, h: 2 },
+    supportsHideLabels: true,
+    supportsMetricSize: true,
+    visualizations: [
+      { value: 'cards', label: 'Tool Cards (Default)' },
+      { value: 'list', label: 'Tool List' },
+      { value: 'compact', label: 'Compact View' },
+      { value: 'metric', label: 'Single Metric (fills widget)' },
+    ],
+    filters: [
+      {
+        label: 'Target Host',
+        key: 'host',
+        type: 'text',
+        placeholder: 'e.g. google.com or 8.8.8.8',
+      },
+      {
+        label: 'Port (for port check)',
+        key: 'port',
+        type: 'number',
+        placeholder: '443',
+      },
+      {
+        label: 'Metric Image (for Single Metric view)',
+        key: 'metricImageUrl',
+        type: 'image-select',
+      },
+      {
+        label: 'Image Size',
+        key: 'metricImageSize',
+        type: 'select',
+        options: [
+          { value: 'xs', label: 'Extra Small' },
+          { value: 'sm', label: 'Small' },
+          { value: 'md', label: 'Medium (Default)' },
+          { value: 'lg', label: 'Large' },
+          { value: 'xl', label: 'Extra Large' },
+        ],
+      },
+      {
+        label: 'Enabled Tools',
+        key: 'tools',
+        type: 'checkbox-group',
+        defaultEnabled: false,
+        items: [
+          { label: 'Ping', key: 'showPing' },
+          { label: 'Traceroute', key: 'showTraceroute' },
+          { label: 'DNS Lookup', key: 'showDns' },
+          { label: 'Port Check', key: 'showPort' },
+          { label: 'WHOIS', key: 'showWhois' },
+        ],
+      },
+      {
+        label: 'Display Options',
+        key: 'displayOptions',
+        type: 'checkbox-group',
+        defaultEnabled: true,
+        items: [
+          { label: 'Show Tool Labels', key: 'showToolLabels' },
+          { label: 'Show Host', key: 'showHost' },
+          { label: 'Show Status Icons', key: 'showStatusIcons' },
+          { label: 'Show Update Time', key: 'showTime' },
+        ],
+      },
+      {
+        label: 'Ping Elements',
+        key: 'pingElements',
+        type: 'checkbox-group',
+        defaultEnabled: true,
+        items: [
+          { label: 'Latency', key: 'showLatency' },
+          { label: 'Packet Loss', key: 'showPacketLoss' },
+        ],
+      },
+      {
+        label: 'Traceroute Elements',
+        key: 'tracerouteElements',
+        type: 'checkbox-group',
+        defaultEnabled: true,
+        items: [
+          { label: 'Show Hops', key: 'showHops' },
+        ],
+      },
+      {
+        label: 'DNS Elements',
+        key: 'dnsElements',
+        type: 'checkbox-group',
+        defaultEnabled: true,
+        items: [
+          { label: 'Show Records', key: 'showRecords' },
+        ],
+      },
+      {
+        label: 'WHOIS Elements',
+        key: 'whoisElements',
+        type: 'checkbox-group',
+        defaultEnabled: true,
+        items: [
+          { label: 'Registrar', key: 'showRegistrar' },
+          { label: 'Dates', key: 'showDates' },
+          { label: 'Name Servers', key: 'showNameServers' },
+        ],
+      },
+      {
+        label: 'Show Raw Output',
+        key: 'showRawOutput',
+        type: 'checkbox',
+      },
+      refreshIntervalFilter,
+    ],
+  },
+  {
+    type: 'rss',
+    name: 'RSS Feed',
+    description: 'Display items from an RSS or Atom feed',
+    defaultSize: { w: 3, h: 3 },
+    minSize: { w: 2, h: 2 },
+    visualizations: [
+      { value: 'list', label: 'List (Default)' },
+      { value: 'cards', label: 'Cards' },
+      { value: 'headlines', label: 'Headlines Only' },
+    ],
+    filters: [
+      {
+        label: 'Feed URL',
+        key: 'feedUrl',
+        type: 'text',
+        placeholder: 'https://example.com/feed.xml',
+      },
+      {
+        label: 'Max Items',
+        key: 'maxItems',
+        type: 'number',
+        placeholder: '10',
+      },
+      {
+        label: 'Search Filter',
+        key: 'search',
+        type: 'text',
+        placeholder: 'Filter by keyword (supports wildcards)',
+      },
+      {
+        label: 'Sort By',
+        key: 'sortBy',
+        type: 'select',
+        options: [
+          { value: 'newest', label: 'Newest First (Default)' },
+          { value: 'oldest', label: 'Oldest First' },
+          { value: 'title', label: 'Title (A-Z)' },
+        ],
+      },
+      {
+        label: 'Compact View',
+        key: 'compactView',
+        type: 'checkbox',
+      },
+      {
+        label: 'Display Elements',
+        key: 'displayElements',
+        type: 'checkbox-group',
+        defaultEnabled: true,
+        items: [
+          { label: 'Description', key: 'showDescription' },
+          { label: 'Author', key: 'showAuthor' },
+          { label: 'Date', key: 'showDate' },
+          { label: 'Image', key: 'showImage' },
+          { label: 'Categories', key: 'showCategories' },
+        ],
+      },
+      {
+        label: 'Stale Content Threshold (days)',
+        key: 'staleThresholdDays',
+        type: 'number',
+        placeholder: 'e.g. 7 (leave empty to disable)',
+      },
+      {
+        label: 'Stale Content Message',
+        key: 'staleMessage',
+        type: 'text',
+        placeholder: 'No recent updates',
+      },
+      {
+        label: 'Stale Display Options',
+        key: 'staleDisplayOptions',
+        type: 'checkbox-group',
+        defaultEnabled: true,
+        items: [
+          { label: 'Show Icon', key: 'staleShowIcon' },
+          { label: 'Show Threshold Text', key: 'staleShowThresholdText' },
+          { label: 'Show Last Update Date', key: 'staleShowLastUpdate' },
+        ],
+      },
+      {
+        label: 'Link Options',
+        key: 'linkOptions',
+        type: 'checkbox-group',
+        defaultEnabled: true,
+        items: [
+          { label: 'Open in New Tab', key: 'openInNewTab' },
+          { label: 'Show Feed Title', key: 'showFeedTitle' },
+        ],
+      },
+      refreshIntervalFilter,
+    ],
+  },
+  {
+    type: 'world-time',
+    name: 'World Time',
+    description: 'Display current time in multiple time zones',
+    defaultSize: { w: 3, h: 2 },
+    minSize: { w: 2, h: 2 },
+    supportsHideLabels: true,
+    visualizations: [
+      { value: 'list', label: 'List View (Default)' },
+      { value: 'grid', label: 'Grid View' },
+      { value: 'clocks', label: 'Analog Clocks' },
+    ],
+    filters: [
+      {
+        label: 'Time Zones',
+        key: 'timeZones',
+        type: 'timezone-multi-select',
+      },
+      {
+        label: '24-Hour Format',
+        key: 'use24Hour',
+        type: 'checkbox',
+      },
+      {
+        label: 'Show Seconds',
+        key: 'showSeconds',
+        type: 'checkbox',
+      },
+      {
+        label: 'Show Date',
+        key: 'showDate',
+        type: 'checkbox',
+      },
+      {
+        label: 'Show UTC Offset',
+        key: 'showTimeZoneOffset',
+        type: 'checkbox',
+      },
+      {
+        label: 'Layout',
+        key: 'layout',
+        type: 'select',
+        options: [
+          { value: 'auto', label: 'Auto (Default)' },
+          { value: 'list', label: 'List' },
+          { value: 'grid', label: 'Grid' },
+        ],
+      },
+    ],
+  },
+  {
+    type: 'service-status',
+    name: 'Service Status',
+    description: 'Monitor external service status pages (GitHub, Cloudflare, Slack, etc.)',
+    defaultSize: { w: 3, h: 2 },
+    minSize: { w: 2, h: 1 },
+    supportsHideLabels: true,
+    visualizations: [
+      { value: 'cards', label: 'Status Cards (Default)' },
+      { value: 'list', label: 'Status List' },
+      { value: 'compact', label: 'Compact View' },
+    ],
+    filters: [
+      {
+        label: 'Services to Monitor',
+        key: 'services',
+        type: 'service-status-selector',
+      },
+      {
+        label: 'Show Only Issues',
+        key: 'showOnlyIssues',
+        type: 'checkbox',
+        defaultValue: false,
+      },
+      {
+        label: 'Sort By',
+        key: 'sortBy',
+        type: 'select',
+        options: [
+          { value: 'custom', label: 'Custom Order (Default)' },
+          { value: 'name', label: 'Name (A-Z)' },
+          { value: 'status', label: 'Status (Issues First)' },
+          { value: 'updated', label: 'Recently Updated' },
+        ],
+      },
+      {
+        label: 'Logo Size',
+        key: 'logoSize',
+        type: 'select',
+        options: [
+          { value: 'xs', label: 'Extra Small' },
+          { value: 'sm', label: 'Small' },
+          { value: 'md', label: 'Medium (Default)' },
+          { value: 'lg', label: 'Large' },
+          { value: 'xl', label: 'Extra Large' },
+        ],
+      },
+      {
+        label: 'Columns Per Row',
+        key: 'columnsPerRow',
+        type: 'select',
+        options: [
+          { value: 'auto', label: 'Auto-fit (Default)' },
+          { value: '1', label: '1' },
+          { value: '2', label: '2' },
+          { value: '3', label: '3' },
+          { value: '4', label: '4' },
+          { value: '5', label: '5' },
+          { value: '6', label: '6' },
+        ],
+      },
+      {
+        label: 'Display Options',
+        key: 'displayOptions',
+        type: 'checkbox-group',
+        defaultEnabled: true,
+        items: [
+          { label: 'Show Description', key: 'showDescription' },
+          { label: 'Show Event Info', key: 'showUpdated' },
+          { label: 'Show Service Icon', key: 'showIcon' },
+        ],
+      },
+      refreshIntervalFilter,
+    ],
+  },
+  {
+    type: 'spacer',
+    name: 'Spacer / Divider',
+    description: 'Add blank space or visual dividers to organize your dashboard',
+    defaultSize: { w: 12, h: 1 },
+    minSize: { w: 1, h: 1 },
+    filters: [
+      {
+        label: 'Style',
+        key: 'style',
+        type: 'select',
+        options: [
+          { value: 'blank', label: 'Blank (Invisible)' },
+          { value: 'line', label: 'Solid Line' },
+          { value: 'dashed', label: 'Dashed Line' },
+          { value: 'dotted', label: 'Dotted Line' },
+          { value: 'double', label: 'Double Line' },
+          { value: 'gradient', label: 'Gradient Fade' },
+          { value: 'shadow', label: 'Shadow/Glow' },
+          { value: 'labeled', label: 'Labeled Divider' },
+        ],
+        defaultValue: 'blank',
+      },
+      {
+        label: 'Label Text',
+        key: 'label',
+        type: 'text',
+        placeholder: 'Section Title',
+        dependsOn: { key: 'style', value: 'labeled' },
+      },
+      {
+        label: 'Color',
+        key: 'color',
+        type: 'select',
+        options: [
+          { value: 'gray', label: 'Gray (Default)' },
+          { value: 'blue', label: 'Blue' },
+          { value: 'green', label: 'Green' },
+          { value: 'purple', label: 'Purple' },
+          { value: 'orange', label: 'Orange' },
+          { value: 'red', label: 'Red' },
+          { value: 'custom', label: 'Custom...' },
+        ],
+        defaultValue: 'gray',
+      },
+      {
+        label: 'Custom Color',
+        key: 'customColor',
+        type: 'color',
+        dependsOn: { key: 'color', value: 'custom' },
+      },
+      {
+        label: 'Thickness',
+        key: 'thickness',
+        type: 'select',
+        options: [
+          { value: 'thin', label: 'Thin (1px)' },
+          { value: 'medium', label: 'Medium (2px)' },
+          { value: 'thick', label: 'Thick (4px)' },
+        ],
+        defaultValue: 'thin',
+      },
+      {
+        label: 'Alignment',
+        key: 'alignment',
+        type: 'select',
+        options: [
+          { value: 'center', label: 'Center' },
+          { value: 'top', label: 'Top' },
+          { value: 'bottom', label: 'Bottom' },
+        ],
+        defaultValue: 'center',
+      },
+      {
+        label: 'Margin',
+        key: 'margin',
+        type: 'select',
+        options: [
+          { value: 'none', label: 'None' },
+          { value: 'small', label: 'Small' },
+          { value: 'medium', label: 'Medium' },
+          { value: 'large', label: 'Large' },
+        ],
+        defaultValue: 'medium',
+      },
+    ],
+  },
+];

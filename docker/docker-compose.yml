@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  peek:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:3001"
+    volumes:
+      - ../data:/app/data
+    environment:
+      - NODE_ENV=production
+      - DATA_DIR=/app/data
+    restart: unless-stopped

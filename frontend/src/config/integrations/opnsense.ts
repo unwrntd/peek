@@ -1,0 +1,313 @@
+import { IntegrationConfig } from './types';
+
+export const opnsenseConfig: IntegrationConfig = {
+  type: 'opnsense',
+  displayName: 'OPNsense',
+  category: 'security',
+  description: 'Open source firewall and routing platform',
+  documentationUrl: 'https://docs.opnsense.org/development/api.html',
+  dependencies: {
+    apis: ['OPNsense REST API'],
+    notes: 'Requires API key with appropriate privileges',
+  },
+  sampleName: 'My OPNsense',
+  defaultPort: 443,
+  sampleHost: '192.168.1.1',
+
+  auth: {
+    defaultMethod: 'api',
+    commonFields: [],
+    methods: [
+      {
+        method: 'api',
+        label: 'API Key/Secret',
+        fields: [
+          {
+            key: 'apiKey',
+            label: 'API Key',
+            type: 'text',
+            placeholder: 'w86XNZob/8Oq8aC5r0kbNarNtdpo...',
+            required: true,
+            helpText: 'Generate from System > Access > Users > API keys',
+          },
+          {
+            key: 'apiSecret',
+            label: 'API Secret',
+            type: 'password',
+            placeholder: 'XeD26XVrJ5ilAc/EmglCRC+0j2e5...',
+            required: true,
+            helpText: 'Downloaded when key was created',
+          },
+        ],
+      },
+    ],
+    helpText: 'Create API key in System > Access > Users. Download credentials immediately after creation.',
+  },
+
+  widgets: [
+    {
+      type: 'opnsense-system',
+      name: 'System Status',
+      description: 'System information and resource usage',
+      metric: 'system',
+      defaultSize: { w: 3, h: 2 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      supportsMetricSize: true,
+      visualizations: [
+        { value: 'card', label: 'System Card (Default)' },
+        { value: 'gauges', label: 'Resource Gauges' },
+        { value: 'compact', label: 'Compact' },
+      ],
+      filters: [
+        {
+          label: 'Elements to Display',
+          key: 'displayElements',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Version', key: 'showVersion' },
+            { label: 'Uptime', key: 'showUptime' },
+            { label: 'CPU', key: 'showCpu' },
+            { label: 'Memory', key: 'showMemory' },
+            { label: 'Disk', key: 'showDisk' },
+            { label: 'Firmware Updates', key: 'showFirmware' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'opnsense-interfaces',
+      name: 'Interfaces',
+      description: 'Network interface status and traffic',
+      metric: 'interfaces',
+      defaultSize: { w: 3, h: 3 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'list', label: 'Interface List (Default)' },
+        { value: 'cards', label: 'Interface Cards' },
+        { value: 'traffic', label: 'Traffic Stats' },
+      ],
+      filters: [
+        {
+          label: 'Status',
+          key: 'status',
+          type: 'select',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'up', label: 'Up' },
+            { value: 'down', label: 'Down' },
+          ],
+        },
+        {
+          label: 'Columns to Display',
+          key: 'columns',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Status', key: 'showStatus' },
+            { label: 'IP Address', key: 'showIP' },
+            { label: 'MAC', key: 'showMAC' },
+            { label: 'Traffic', key: 'showTraffic' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'opnsense-firewall',
+      name: 'Firewall Rules',
+      description: 'Firewall rule overview',
+      metric: 'firewall',
+      defaultSize: { w: 4, h: 4 },
+      minSize: { w: 3, h: 2 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'table', label: 'Rule Table (Default)' },
+        { value: 'list', label: 'Rule List' },
+        { value: 'stats', label: 'Statistics' },
+      ],
+      filters: [
+        {
+          label: 'Interface',
+          key: 'interface',
+          type: 'text',
+          placeholder: 'Filter by interface',
+        },
+        {
+          label: 'Action',
+          key: 'action',
+          type: 'select',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'pass', label: 'Pass' },
+            { value: 'block', label: 'Block' },
+            { value: 'reject', label: 'Reject' },
+          ],
+        },
+        {
+          label: 'Status',
+          key: 'enabled',
+          type: 'select',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'true', label: 'Enabled' },
+            { value: 'false', label: 'Disabled' },
+          ],
+        },
+        {
+          label: 'Max Items',
+          key: 'maxItems',
+          type: 'number',
+          placeholder: '50',
+        },
+      ],
+    },
+    {
+      type: 'opnsense-gateways',
+      name: 'Gateways',
+      description: 'Gateway status and health',
+      metric: 'gateways',
+      defaultSize: { w: 2, h: 2 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      supportsMetricSize: true,
+      visualizations: [
+        { value: 'cards', label: 'Gateway Cards (Default)' },
+        { value: 'list', label: 'Gateway List' },
+        { value: 'status', label: 'Status Only' },
+      ],
+      filters: [
+        {
+          label: 'Columns to Display',
+          key: 'columns',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Status', key: 'showStatus' },
+            { label: 'Latency', key: 'showLatency' },
+            { label: 'Packet Loss', key: 'showLoss' },
+            { label: 'Gateway IP', key: 'showGatewayIP' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'opnsense-vpn',
+      name: 'VPN Status',
+      description: 'OpenVPN, IPsec, and WireGuard tunnels',
+      metric: 'vpn',
+      defaultSize: { w: 3, h: 3 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'list', label: 'Tunnel List (Default)' },
+        { value: 'cards', label: 'VPN Cards' },
+        { value: 'tabs', label: 'By Type' },
+      ],
+      filters: [
+        {
+          label: 'VPN Type',
+          key: 'vpnType',
+          type: 'select',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'openvpn', label: 'OpenVPN' },
+            { value: 'ipsec', label: 'IPsec' },
+            { value: 'wireguard', label: 'WireGuard' },
+          ],
+        },
+        {
+          label: 'Status',
+          key: 'status',
+          type: 'select',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'up', label: 'Up' },
+            { value: 'down', label: 'Down' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'opnsense-services',
+      name: 'Services',
+      description: 'System service status',
+      metric: 'services',
+      defaultSize: { w: 2, h: 3 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'list', label: 'Service List (Default)' },
+        { value: 'grid', label: 'Status Grid' },
+        { value: 'compact', label: 'Compact' },
+      ],
+      filters: [
+        {
+          label: 'Status',
+          key: 'status',
+          type: 'select',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'running', label: 'Running' },
+            { value: 'stopped', label: 'Stopped' },
+          ],
+        },
+        {
+          label: 'Search',
+          key: 'search',
+          type: 'text',
+          placeholder: 'Filter services...',
+        },
+      ],
+    },
+    {
+      type: 'opnsense-dns',
+      name: 'DNS Statistics',
+      description: 'Unbound DNS resolver statistics',
+      metric: 'dns',
+      defaultSize: { w: 2, h: 2 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      supportsMetricSize: true,
+      visualizations: [
+        { value: 'stats', label: 'Query Stats (Default)' },
+        { value: 'chart', label: 'Cache Hit Rate' },
+        { value: 'list', label: 'Recent Queries' },
+      ],
+    },
+    {
+      type: 'opnsense-ids',
+      name: 'IDS/IPS Alerts',
+      description: 'Intrusion detection alerts',
+      metric: 'ids',
+      defaultSize: { w: 3, h: 3 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'list', label: 'Alert List (Default)' },
+        { value: 'chart', label: 'By Severity' },
+        { value: 'summary', label: 'Summary' },
+      ],
+      filters: [
+        {
+          label: 'Severity',
+          key: 'severity',
+          type: 'select',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'high', label: 'High' },
+            { value: 'medium', label: 'Medium' },
+            { value: 'low', label: 'Low' },
+          ],
+        },
+        {
+          label: 'Max Items',
+          key: 'maxItems',
+          type: 'number',
+          placeholder: '50',
+        },
+      ],
+    },
+  ],
+};

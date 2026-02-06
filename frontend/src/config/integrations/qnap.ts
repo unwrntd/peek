@@ -1,0 +1,303 @@
+import { IntegrationConfig } from './types';
+
+export const qnapConfig: IntegrationConfig = {
+  type: 'qnap',
+  displayName: 'QNAP QTS',
+  category: 'storage',
+  description: 'NAS system monitoring with disk health and volumes',
+  documentationUrl: 'https://download.qnap.com/dev/API_QNAP_QTS_Authentication.pdf',
+  dependencies: {
+    apis: ['QNAP QTS API'],
+    notes: 'Requires admin credentials or dedicated monitoring user',
+  },
+  sampleName: 'My QNAP NAS',
+  defaultPort: 8080,
+  sampleHost: '192.168.1.50',
+
+  auth: {
+    defaultMethod: 'basic',
+    commonFields: [],
+    methods: [
+      {
+        method: 'basic',
+        label: 'Username/Password',
+        fields: [
+          {
+            key: 'username',
+            label: 'Username',
+            type: 'text',
+            placeholder: 'admin',
+            required: true,
+          },
+          {
+            key: 'password',
+            label: 'Password',
+            type: 'password',
+            required: true,
+          },
+        ],
+      },
+    ],
+    helpText: 'Use your QNAP QTS admin credentials. For better security, consider creating a dedicated monitoring user with System Monitoring permissions.',
+  },
+
+  widgets: [
+    {
+      type: 'qnap-system-overview',
+      name: 'System Overview',
+      description: 'NAS hostname, model, firmware, and uptime',
+      metric: 'system-info',
+      defaultSize: { w: 3, h: 2 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      supportsMetricSize: true,
+      visualizations: [
+        { value: 'cards', label: 'Info Cards (Default)' },
+        { value: 'compact', label: 'Compact List' },
+        { value: 'metrics', label: 'Large Metrics' },
+      ],
+      filters: [
+        {
+          label: 'Elements to Display',
+          key: 'displayElements',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Hostname', key: 'showHostname' },
+            { label: 'Model', key: 'showModel' },
+            { label: 'Firmware', key: 'showFirmware' },
+            { label: 'Uptime', key: 'showUptime' },
+            { label: 'Serial Number', key: 'showSerial' },
+          ],
+        },
+        {
+          label: 'Compact View',
+          key: 'compactView',
+          type: 'checkbox',
+        },
+      ],
+    },
+    {
+      type: 'qnap-resource-usage',
+      name: 'Resource Usage',
+      description: 'CPU and memory usage with temperatures',
+      metric: 'system-stats',
+      defaultSize: { w: 4, h: 3 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      supportsMetricSize: true,
+      visualizations: [
+        { value: 'bars', label: 'Progress Bars (Default)' },
+        { value: 'gauges', label: 'Circular Gauges' },
+        { value: 'text', label: 'Text Only' },
+      ],
+      filters: [
+        {
+          label: 'Metrics to Display',
+          key: 'metrics',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'CPU Usage', key: 'showCpu' },
+            { label: 'Memory Usage', key: 'showMemory' },
+            { label: 'CPU Temperature', key: 'showCpuTemp' },
+            { label: 'System Temperature', key: 'showSysTemp' },
+          ],
+        },
+        {
+          label: 'Warning Threshold (%)',
+          key: 'warningThreshold',
+          type: 'number',
+          placeholder: '75',
+        },
+        {
+          label: 'Critical Threshold (%)',
+          key: 'criticalThreshold',
+          type: 'number',
+          placeholder: '90',
+        },
+        {
+          label: 'Show Totals',
+          key: 'totals',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Total RAM', key: 'showTotalRam' },
+          ],
+        },
+        {
+          label: 'Compact View',
+          key: 'compactView',
+          type: 'checkbox',
+        },
+      ],
+    },
+    {
+      type: 'qnap-volume-status',
+      name: 'Volume Status',
+      description: 'Storage volumes with RAID status and capacity',
+      metric: 'volumes',
+      defaultSize: { w: 5, h: 4 },
+      minSize: { w: 4, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'cards', label: 'Volume Cards (Default)' },
+        { value: 'table', label: 'Table View' },
+        { value: 'bars', label: 'Usage Bars' },
+      ],
+      filters: [
+        {
+          label: 'Status Filter',
+          key: 'status',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'Ready', label: 'Ready' },
+            { value: 'Degraded', label: 'Degraded' },
+            { value: 'Rebuilding', label: 'Rebuilding' },
+          ],
+        },
+        {
+          label: 'Sort By',
+          key: 'sortField',
+          type: 'select',
+          options: [
+            { value: 'name', label: 'Volume Name' },
+            { value: 'usagePercent', label: 'Usage %' },
+            { value: 'totalSize', label: 'Total Size' },
+            { value: 'usedSize', label: 'Used Size' },
+            { value: 'freeSize', label: 'Free Size' },
+            { value: 'status', label: 'Status' },
+            { value: 'raidType', label: 'RAID Type' },
+          ],
+        },
+        {
+          label: 'Sort Direction',
+          key: 'sortDirection',
+          type: 'button-group',
+          options: [
+            { value: 'asc', label: 'Ascending' },
+            { value: 'desc', label: 'Descending' },
+          ],
+        },
+        {
+          label: 'Columns to Display',
+          key: 'columns',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Status', key: 'showStatus' },
+            { label: 'RAID Type', key: 'showRaidType' },
+            { label: 'Usage Bar', key: 'showUsageBar' },
+            { label: 'Capacity Details', key: 'showCapacity' },
+            { label: 'Total Summary', key: 'showSummary' },
+          ],
+        },
+        {
+          label: 'Compact View',
+          key: 'compactView',
+          type: 'checkbox',
+        },
+      ],
+    },
+    {
+      type: 'qnap-disk-health',
+      name: 'Disk Health',
+      description: 'Physical disk SMART status and temperatures',
+      metric: 'disks',
+      defaultSize: { w: 5, h: 4 },
+      minSize: { w: 4, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'table', label: 'Table View (Default)' },
+        { value: 'cards', label: 'Disk Cards' },
+        { value: 'compact', label: 'Compact List' },
+      ],
+      filters: [
+        {
+          label: 'Disk Type',
+          key: 'diskType',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'ssd', label: 'SSD' },
+            { value: 'hdd', label: 'HDD' },
+            { value: 'nvme', label: 'NVMe' },
+          ],
+        },
+        {
+          label: 'Health Filter',
+          key: 'healthFilter',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'Good', label: 'Good' },
+            { value: 'Warning', label: 'Warning' },
+            { value: 'Error', label: 'Error' },
+          ],
+        },
+        {
+          label: 'Columns to Display',
+          key: 'columns',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Disk Name/Number', key: 'showDiskName' },
+            { label: 'Disk Type Badge', key: 'showDiskType' },
+            { label: 'Model', key: 'showModel' },
+            { label: 'Serial', key: 'showSerial' },
+            { label: 'Capacity', key: 'showCapacity' },
+            { label: 'Temperature', key: 'showTemperature' },
+            { label: 'Health Status', key: 'showHealth' },
+            { label: 'SMART Status', key: 'showSmart' },
+            { label: 'Total Capacity Summary', key: 'showTotalCapacity' },
+          ],
+        },
+        {
+          label: 'Compact View',
+          key: 'compactView',
+          type: 'checkbox',
+        },
+      ],
+    },
+    {
+      type: 'qnap-network-bandwidth',
+      name: 'Network Bandwidth',
+      description: 'Upload and download speeds',
+      metric: 'network',
+      defaultSize: { w: 3, h: 2 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      supportsMetricSize: true,
+      visualizations: [
+        { value: 'text', label: 'Text Values (Default)' },
+        { value: 'bars', label: 'Speed Bars' },
+        { value: 'gauges', label: 'Circular Gauges' },
+      ],
+      filters: [
+        {
+          label: 'Elements to Display',
+          key: 'displayElements',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Upload Speed', key: 'showUpload' },
+            { label: 'Download Speed', key: 'showDownload' },
+            { label: 'Total Transferred', key: 'showTotals' },
+          ],
+        },
+        {
+          label: 'Max Speed (MB/s)',
+          key: 'maxSpeed',
+          type: 'number',
+          placeholder: '125',
+        },
+        {
+          label: 'Compact View',
+          key: 'compactView',
+          type: 'checkbox',
+        },
+      ],
+    },
+  ],
+};

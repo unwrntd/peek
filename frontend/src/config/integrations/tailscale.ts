@@ -1,0 +1,346 @@
+import { IntegrationConfig } from './types';
+
+export const tailscaleConfig: IntegrationConfig = {
+  type: 'tailscale',
+  displayName: 'Tailscale',
+  category: 'networking',
+  description: 'Zero-configuration mesh VPN for secure network connectivity',
+  documentationUrl: 'https://tailscale.com/api',
+  dependencies: {
+    apis: ['Tailscale API'],
+    notes: 'Requires API key or OAuth client credentials from Tailscale admin console.',
+  },
+  sampleName: 'My Tailscale',
+  defaultPort: 443,
+  sampleHost: 'api.tailscale.com',
+
+  auth: {
+    defaultMethod: 'token',
+    commonFields: [
+      {
+        key: 'tailnet',
+        label: 'Tailnet Name',
+        type: 'text',
+        placeholder: 'your-tailnet.ts.net or "-" for personal',
+        helpText: 'Tailnet identifier. Use "-" for personal tailnets.',
+        colSpan: 2,
+      },
+    ],
+    methods: [
+      {
+        method: 'token',
+        label: 'API Key',
+        fields: [
+          {
+            key: 'apiKey',
+            label: 'API Key',
+            type: 'password',
+            placeholder: 'tskey-api-xxxxx...',
+            required: true,
+            helpText: 'Generate from Settings > Keys in Tailscale admin console',
+            colSpan: 2,
+          },
+        ],
+      },
+      {
+        method: 'api',
+        label: 'OAuth Client',
+        fields: [
+          {
+            key: 'clientId',
+            label: 'Client ID',
+            type: 'text',
+            placeholder: 'OAuth client ID',
+            required: true,
+          },
+          {
+            key: 'clientSecret',
+            label: 'Client Secret',
+            type: 'password',
+            placeholder: 'OAuth client secret',
+            required: true,
+          },
+        ],
+      },
+    ],
+    helpText: 'Create API keys or OAuth clients at https://login.tailscale.com/admin/settings/keys',
+  },
+
+  widgets: [
+    {
+      type: 'tailscale-overview',
+      name: 'Network Overview',
+      description: 'Tailnet summary with device and user counts',
+      metric: 'overview',
+      defaultSize: { w: 4, h: 3 },
+      minSize: { w: 3, h: 2 },
+      supportsHideLabels: true,
+      supportsMetricSize: true,
+      visualizations: [
+        { value: 'cards', label: 'Info Cards (Default)' },
+        { value: 'compact', label: 'Compact View' },
+      ],
+      filters: [
+        {
+          label: 'Elements to Display',
+          key: 'displayElements',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Device Count', key: 'showDeviceCount' },
+            { label: 'Online/Offline', key: 'showOnlineStatus' },
+            { label: 'User Count', key: 'showUserCount' },
+            { label: 'Pending Approvals', key: 'showPendingApprovals' },
+            { label: 'Subnet Routers', key: 'showSubnetRouters' },
+            { label: 'Exit Nodes', key: 'showExitNodes' },
+            { label: 'MagicDNS Status', key: 'showMagicDNS' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'tailscale-devices',
+      name: 'Devices',
+      description: 'All devices with status, addresses, and routes',
+      metric: 'devices',
+      defaultSize: { w: 5, h: 4 },
+      minSize: { w: 4, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'table', label: 'Table (Default)' },
+        { value: 'cards', label: 'Cards' },
+      ],
+      filters: [
+        {
+          label: 'Status',
+          key: 'status',
+          type: 'select',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'online', label: 'Online' },
+            { value: 'offline', label: 'Offline' },
+          ],
+        },
+        {
+          label: 'Search',
+          key: 'search',
+          type: 'text',
+          placeholder: 'Search by name, hostname, or IP',
+        },
+        {
+          label: 'Tag Filter',
+          key: 'tag',
+          type: 'text',
+          placeholder: 'e.g. tag:server, tag:production',
+        },
+        {
+          label: 'Max Items',
+          key: 'maxItems',
+          type: 'number',
+          placeholder: '20',
+        },
+        {
+          label: 'Columns to Display',
+          key: 'columns',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Status', key: 'showStatus' },
+            { label: 'Addresses', key: 'showAddresses' },
+            { label: 'OS', key: 'showOS' },
+            { label: 'User', key: 'showUser' },
+            { label: 'Last Seen', key: 'showLastSeen' },
+            { label: 'Routes', key: 'showRoutes' },
+            { label: 'Tags', key: 'showTags' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'tailscale-users',
+      name: 'Users',
+      description: 'Users in the tailnet with roles and status',
+      metric: 'users',
+      defaultSize: { w: 4, h: 4 },
+      minSize: { w: 3, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'table', label: 'Table (Default)' },
+        { value: 'cards', label: 'Cards' },
+      ],
+      filters: [
+        {
+          label: 'Role',
+          key: 'role',
+          type: 'select',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'owner', label: 'Owner' },
+            { value: 'admin', label: 'Admin' },
+            { value: 'member', label: 'Member' },
+          ],
+        },
+        {
+          label: 'Search',
+          key: 'search',
+          type: 'text',
+          placeholder: 'Search by name or email',
+        },
+        {
+          label: 'Columns to Display',
+          key: 'columns',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Role', key: 'showRole' },
+            { label: 'Status', key: 'showStatus' },
+            { label: 'Device Count', key: 'showDeviceCount' },
+            { label: 'Last Seen', key: 'showLastSeen' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'tailscale-dns',
+      name: 'DNS Settings',
+      description: 'DNS configuration including MagicDNS and nameservers',
+      metric: 'dns',
+      defaultSize: { w: 3, h: 3 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      supportsMetricSize: true,
+      visualizations: [
+        { value: 'cards', label: 'Info Cards (Default)' },
+        { value: 'compact', label: 'Compact View' },
+      ],
+      filters: [
+        {
+          label: 'Elements to Display',
+          key: 'displayElements',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'MagicDNS Status', key: 'showMagicDNS' },
+            { label: 'Nameservers', key: 'showNameservers' },
+            { label: 'Search Paths', key: 'showSearchPaths' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'tailscale-acl',
+      name: 'Access Control',
+      description: 'ACL policy summary with rules and groups',
+      metric: 'acl',
+      defaultSize: { w: 4, h: 4 },
+      minSize: { w: 3, h: 3 },
+      supportsHideLabels: true,
+      supportsMetricSize: true,
+      visualizations: [
+        { value: 'cards', label: 'Summary Cards (Default)' },
+        { value: 'detailed', label: 'Detailed View' },
+      ],
+      filters: [
+        {
+          label: 'Elements to Display',
+          key: 'displayElements',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'ACL Rules', key: 'showRules' },
+            { label: 'Groups', key: 'showGroups' },
+            { label: 'Tag Owners', key: 'showTagOwners' },
+            { label: 'SSH Rules', key: 'showSSHRules' },
+            { label: 'Auto Approvers', key: 'showAutoApprovers' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'tailscale-routes',
+      name: 'Routes & Exit Nodes',
+      description: 'Subnet routes and exit node configuration',
+      metric: 'routes',
+      defaultSize: { w: 4, h: 3 },
+      minSize: { w: 3, h: 2 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'table', label: 'Table (Default)' },
+        { value: 'cards', label: 'Cards' },
+      ],
+      filters: [
+        {
+          label: 'Type',
+          key: 'routeType',
+          type: 'select',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'subnet', label: 'Subnets' },
+            { value: 'exit', label: 'Exit Nodes' },
+          ],
+        },
+        {
+          label: 'Status',
+          key: 'status',
+          type: 'select',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'enabled', label: 'Enabled' },
+            { value: 'disabled', label: 'Disabled' },
+          ],
+        },
+        {
+          label: 'Columns to Display',
+          key: 'columns',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Device', key: 'showDevice' },
+            { label: 'Route', key: 'showRoute' },
+            { label: 'Type', key: 'showType' },
+            { label: 'Status', key: 'showStatus' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'tailscale-keys',
+      name: 'Auth Keys',
+      description: 'Authentication keys with expiry and settings',
+      metric: 'auth-keys',
+      defaultSize: { w: 4, h: 3 },
+      minSize: { w: 3, h: 2 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'table', label: 'Table (Default)' },
+        { value: 'cards', label: 'Cards' },
+      ],
+      filters: [
+        {
+          label: 'Status',
+          key: 'status',
+          type: 'select',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'valid', label: 'Valid' },
+            { value: 'expired', label: 'Expired' },
+            { value: 'revoked', label: 'Revoked' },
+          ],
+        },
+        {
+          label: 'Columns to Display',
+          key: 'columns',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Key ID', key: 'showKeyId' },
+            { label: 'Description', key: 'showDescription' },
+            { label: 'Created', key: 'showCreated' },
+            { label: 'Expires', key: 'showExpires' },
+            { label: 'Capabilities', key: 'showCapabilities' },
+          ],
+        },
+      ],
+    },
+  ],
+};

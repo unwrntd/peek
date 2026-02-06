@@ -1,0 +1,367 @@
+import { IntegrationConfig } from './types';
+
+export const tautulliConfig: IntegrationConfig = {
+  type: 'tautulli',
+  displayName: 'Tautulli',
+  category: 'media-servers',
+  description: 'Plex analytics and monitoring dashboard',
+  documentationUrl: 'https://github.com/Tautulli/Tautulli/wiki/Tautulli-API-Reference',
+  dependencies: {
+    apis: ['Tautulli API'],
+  },
+  sampleName: 'My Tautulli',
+  defaultPort: 8181,
+  sampleHost: '192.168.1.100',
+
+  auth: {
+    defaultMethod: 'api',
+    commonFields: [],
+    methods: [
+      {
+        method: 'api',
+        label: 'API Key',
+        fields: [
+          {
+            key: 'apiKey',
+            label: 'API Key',
+            type: 'password',
+            placeholder: 'Your Tautulli API key',
+            required: true,
+            helpText: 'Find your API key in Tautulli Settings > Web Interface > API Key',
+          },
+        ],
+      },
+    ],
+    helpText: 'Enter your Tautulli API key. You can find this in Tautulli Settings > Web Interface > API Key.',
+  },
+
+  widgets: [
+    {
+      type: 'tautulli-activity',
+      name: 'Current Activity',
+      description: 'Active streaming sessions with user and media details',
+      metric: 'activity',
+      defaultSize: { w: 5, h: 4 },
+      minSize: { w: 4, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'cards', label: 'Session Cards (Default)' },
+        { value: 'list', label: 'Compact List' },
+        { value: 'posters', label: 'Poster Grid' },
+      ],
+      filters: [
+        {
+          label: 'Session Details',
+          key: 'details',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Progress Bar', key: 'showProgress' },
+            { label: 'User', key: 'showUser' },
+            { label: 'Device/Platform', key: 'showDevice' },
+            { label: 'Quality/Transcode', key: 'showQuality' },
+            { label: 'Bandwidth', key: 'showBandwidth' },
+          ],
+        },
+        {
+          label: 'Compact View',
+          key: 'compactView',
+          type: 'checkbox',
+        },
+      ],
+    },
+    {
+      type: 'tautulli-stream-count',
+      name: 'Stream Count',
+      description: 'Total active streams with transcode breakdown',
+      metric: 'activity',
+      defaultSize: { w: 2, h: 2 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      supportsMetricSize: true,
+      visualizations: [
+        { value: 'number', label: 'Number' },
+        { value: 'donut', label: 'Donut Chart' },
+        { value: 'multi-row', label: 'Multi-Row' },
+      ],
+      filters: [
+        {
+          label: 'Display Options',
+          key: 'displayOptions',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Show Bandwidth', key: 'showBandwidth' },
+            { label: 'Show Breakdown', key: 'showBreakdown' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'tautulli-watch-stats',
+      name: 'Watch Statistics',
+      description: 'Top movies, TV shows, and users',
+      metric: 'home-stats',
+      defaultSize: { w: 4, h: 4 },
+      minSize: { w: 3, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'bars', label: 'Bar Charts (Default)' },
+        { value: 'list', label: 'Simple Lists' },
+        { value: 'cards', label: 'Stat Cards' },
+      ],
+      filters: [
+        {
+          label: 'Statistics to Show',
+          key: 'statsToShow',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Movies', key: 'showMovies' },
+            { label: 'TV Shows', key: 'showTV' },
+            { label: 'Music', key: 'showMusic' },
+            { label: 'Users', key: 'showUsers' },
+            { label: 'Platforms', key: 'showPlatforms' },
+            { label: 'Libraries', key: 'showLibraries' },
+            { label: 'Recent', key: 'showRecent' },
+            { label: 'Concurrent', key: 'showConcurrent' },
+          ],
+        },
+        {
+          label: 'Items per Category',
+          key: 'itemsPerCategory',
+          type: 'number',
+          placeholder: '5',
+        },
+        {
+          label: 'Compact View',
+          key: 'compactView',
+          type: 'checkbox',
+        },
+      ],
+    },
+    {
+      type: 'tautulli-recently-added',
+      name: 'Recently Added',
+      description: 'Recently added movies, shows, and music',
+      metric: 'recently-added',
+      defaultSize: { w: 4, h: 4 },
+      minSize: { w: 3, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'posters', label: 'Poster Grid (Default)' },
+        { value: 'list', label: 'Detailed List' },
+        { value: 'cards', label: 'Media Cards' },
+      ],
+      filters: [
+        {
+          label: 'Media Type',
+          key: 'mediaType',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'movie', label: 'Movies' },
+            { value: 'show', label: 'TV Shows' },
+            { value: 'artist', label: 'Music' },
+          ],
+        },
+        {
+          label: 'Items to Show',
+          key: 'itemCount',
+          type: 'number',
+          placeholder: '10',
+        },
+        {
+          label: 'Display Options',
+          key: 'displayOptions',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Year', key: 'showYear' },
+            { label: 'Library Name', key: 'showLibrary' },
+            { label: 'Duration', key: 'showDuration' },
+          ],
+        },
+        {
+          label: 'Compact View',
+          key: 'compactView',
+          type: 'checkbox',
+        },
+      ],
+    },
+    {
+      type: 'tautulli-history',
+      name: 'Watch History',
+      description: 'Recent viewing history with user and completion status',
+      metric: 'history',
+      defaultSize: { w: 5, h: 4 },
+      minSize: { w: 4, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'list', label: 'List (Default)' },
+        { value: 'timeline', label: 'Timeline' },
+      ],
+      filters: [
+        {
+          label: 'Media Type',
+          key: 'mediaType',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'movie', label: 'Movies' },
+            { value: 'episode', label: 'TV' },
+            { value: 'track', label: 'Music' },
+          ],
+        },
+        {
+          label: 'Items to Show',
+          key: 'itemCount',
+          type: 'number',
+          placeholder: '20',
+        },
+        {
+          label: 'Display Options',
+          key: 'displayOptions',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'User', key: 'showUser' },
+            { label: 'Date/Time', key: 'showDate' },
+            { label: 'Duration', key: 'showDuration' },
+            { label: 'Completion %', key: 'showCompletion' },
+            { label: 'Platform', key: 'showPlatform' },
+          ],
+        },
+        {
+          label: 'Compact View',
+          key: 'compactView',
+          type: 'checkbox',
+        },
+      ],
+    },
+    {
+      type: 'tautulli-plays-chart',
+      name: 'Plays Chart',
+      description: 'Chart of plays over time by media type',
+      metric: 'plays-by-date',
+      defaultSize: { w: 5, h: 3 },
+      minSize: { w: 4, h: 2 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'line', label: 'Line Chart (Default)' },
+        { value: 'bar', label: 'Bar Chart' },
+        { value: 'area', label: 'Area Chart' },
+      ],
+      filters: [
+        {
+          label: 'Chart Type',
+          key: 'chartType',
+          type: 'button-group',
+          options: [
+            { value: 'line', label: 'Line' },
+            { value: 'bar', label: 'Bar' },
+            { value: 'area', label: 'Area' },
+          ],
+        },
+        {
+          label: 'Series to Show',
+          key: 'seriesToShow',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Movies', key: 'showMovies' },
+            { label: 'TV Shows', key: 'showTV' },
+            { label: 'Music', key: 'showMusic' },
+          ],
+        },
+        {
+          label: 'Show Legend',
+          key: 'showLegend',
+          type: 'checkbox',
+        },
+      ],
+    },
+    {
+      type: 'tautulli-activity-heatmap',
+      name: 'Activity Heatmap',
+      description: 'Watch activity patterns by hour and day of week',
+      metric: 'history',
+      defaultSize: { w: 6, h: 4 },
+      minSize: { w: 4, h: 3 },
+      supportsHideLabels: true,
+      visualizations: [
+        { value: 'heatmap', label: 'Heatmap (Default)' },
+        { value: 'bars', label: 'Hourly Bars' },
+        { value: 'line', label: 'Activity Line' },
+      ],
+      filters: [
+        {
+          label: 'Media Type',
+          key: 'mediaType',
+          type: 'button-group',
+          options: [
+            { value: '', label: 'All' },
+            { value: 'movie', label: 'Movies' },
+            { value: 'episode', label: 'TV' },
+            { value: 'track', label: 'Music' },
+          ],
+        },
+        {
+          label: 'Color Scheme',
+          key: 'colorScheme',
+          type: 'select',
+          options: [
+            { value: 'purple', label: 'Purple' },
+            { value: 'blue', label: 'Blue' },
+            { value: 'green', label: 'Green' },
+            { value: 'orange', label: 'Orange' },
+          ],
+        },
+        {
+          label: 'Show Values',
+          key: 'showValues',
+          type: 'checkbox',
+        },
+        {
+          label: 'Compact View',
+          key: 'compactView',
+          type: 'checkbox',
+        },
+      ],
+    },
+    {
+      type: 'tautulli-server-status',
+      name: 'Server Status',
+      description: 'Tautulli and Plex server information',
+      metric: 'server-info',
+      defaultSize: { w: 3, h: 2 },
+      minSize: { w: 2, h: 2 },
+      supportsHideLabels: true,
+      supportsMetricSize: true,
+      visualizations: [
+        { value: 'cards', label: 'Status Cards (Default)' },
+        { value: 'compact', label: 'Compact List' },
+        { value: 'metrics', label: 'Large Metrics' },
+      ],
+      filters: [
+        {
+          label: 'Elements to Display',
+          key: 'displayElements',
+          type: 'checkbox-group',
+          defaultEnabled: true,
+          items: [
+            { label: 'Tautulli Version', key: 'showTautulliVersion' },
+            { label: 'Plex Server Name', key: 'showPlexName' },
+            { label: 'Plex Version', key: 'showPlexVersion' },
+            { label: 'Platform', key: 'showPlatform' },
+          ],
+        },
+        {
+          label: 'Compact View',
+          key: 'compactView',
+          type: 'checkbox',
+        },
+      ],
+    },
+  ],
+};
